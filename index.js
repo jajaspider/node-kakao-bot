@@ -15,6 +15,7 @@ const _ = require("lodash");
 const selection = require("./api/selection.js");
 const { RANDOM_SELECTION } = require("./config/constants.js");
 const { CONNECTION_INFO } = require("./config/connection.js");
+const Utils = require("./utils.js");
 
 const DEVICE_UUID = CONNECTION_INFO.DEVICE_UUID;
 const DEVICE_NAME = CONNECTION_INFO.DEVICE_NAME;
@@ -23,11 +24,7 @@ const PASSWORD = CONNECTION_INFO.PASSWORD;
 const CLIENT = new node_kakao.TalkClient();
 
 const COMPRES = "\u200b".repeat(500);
-let nickname_list = [];
 let channel_test = [];
-// 임시 CGV 변수
-let cgv_once12 = false;
-let cgv_once13 = false;
 
 async function main() {
   const api = await node_kakao.AuthApiClient.create(DEVICE_NAME, DEVICE_UUID);
@@ -65,6 +62,7 @@ CLIENT.on("chat", async (data, channel) => {
   const sender = data.getSenderInfo(channel);
   let data_split = data.text.trim().split(" ");
   if (!sender) return;
+
   logger.debug(
     `${String(data.getSenderInfo(channel)["nickname"])} : ${data.text}`
   );
@@ -98,12 +96,6 @@ CLIENT.on("chat", async (data, channel) => {
   }
   // 관리자 링크ID값 '116430197'
   if (String(sender["linkId"]) === "116430197") {
-    let data_split = data.text.split(" ");
-    if (data.text === "!등록") {
-      channel_test.push(String(channel.channelId));
-      console.log(channel_test);
-    }
-
     if (data_split[0] === "파일") {
       try {
         let file_data = fs.readFileSync(`./${data_split[1]}.txt`, "utf8");
@@ -169,14 +161,11 @@ CLIENT.on("chat", async (data, channel) => {
     }
   }
 
-  if (
-    data.text.indexOf("확률") !== -1 &&
-    data.text.indexOf("확률") === data.text.length - 2
-  ) {
+  if (data.text.endsWith("확률")) {
     channel.sendChat(
       new node_kakao.ChatBuilder()
         .append(new node_kakao.ReplyContent(data.chat))
-        .text("확률 : " + get_percent() + "%")
+        .text("확률 : " + Utils.getPercent() + "%")
         .build(node_kakao.KnownChatType.REPLY)
     );
   }
@@ -653,7 +642,7 @@ const meso_info = async (channel, server_name) => {
         "#app > div > div > div.container.container--fluid > div > div:nth-child(2) > div > div.mt-2.pa-2.v-card.v-sheet.v-sheet--outlined.theme--light.rounded-0 > div.v-data-table.letter_spacing.v-data-table--dense.theme--light > div > table"
       )
     );
-    console.log(await server_data.getText());
+    // console.log(await server_data.getText());
     meso_data(channel, server_name, await server_data.getText());
   } catch (e) {
     console.log(e);
@@ -743,7 +732,6 @@ async function lostark_notice_check(html) {
       if (data_split.indexOf(String(i[0])) !== -1) {
         // console.log(i[1]['_channel']);
         i[1].sendChat(return_string);
-        sleep(100);
       }
     }
   }
@@ -814,7 +802,6 @@ async function maplestory_notice_check(html) {
       if (data_split.indexOf(String(i[0])) !== -1) {
         // console.log(i[1]['_channel']);
         i[1].sendChat(return_string);
-        sleep(100);
       }
     }
   }
@@ -1014,15 +1001,8 @@ function contents_timer(contents) {
     if (data_split.indexOf(String(i[0])) !== -1) {
       // console.log(i[1]['_channel']);
       i[1].sendChat(contents + " 시작 10분전입니다.");
-      sleep(100);
     }
   }
-}
-
-//지연시간용
-function sleep(ms) {
-  const wakeUpTime = Date.now() + ms;
-  while (Date.now() < wakeUpTime) {}
 }
 
 function register_contents(contents, channelId) {
@@ -1073,11 +1053,6 @@ function register_contents(contents, channelId) {
     });
     return contents + " 알림 Off -> ON";
   }
-}
-
-// ~~~ 확률 명령어
-function get_percent() {
-  return Math.floor(Math.random() * 101);
 }
 
 main().then();
