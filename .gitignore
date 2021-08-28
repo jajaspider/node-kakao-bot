@@ -1,3 +1,11 @@
-.idea
+*.txt
+chromedriver.exe
+
+# temp file
+start.sh
 test.js
-config.js
+test2.js
+constants
+#setting
+config
+logs
