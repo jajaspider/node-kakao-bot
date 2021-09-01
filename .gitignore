@@ -7,6 +7,7 @@ test.js
 test2.js
 constants
 #setting
-config
+config/connection.js
+config/lostarkupdater-6592a098bcaf.json
 logs
 node_modules
