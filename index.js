@@ -16,6 +16,7 @@ const selection = require("./api/selection.js");
 const { RANDOM_SELECTION } = require("./config/constants.js");
 const { CONNECTION_INFO } = require("./config/connection.js");
 const Utils = require("./utils.js");
+const { commandValidator } = require("./commandManager");
 
 const DEVICE_UUID = CONNECTION_INFO.DEVICE_UUID;
 const DEVICE_NAME = CONNECTION_INFO.DEVICE_NAME;
@@ -24,7 +25,6 @@ const PASSWORD = CONNECTION_INFO.PASSWORD;
 const CLIENT = new node_kakao.TalkClient();
 
 const COMPRES = "\u200b".repeat(500);
-let channel_test = [];
 
 async function main() {
   const api = await node_kakao.AuthApiClient.create(DEVICE_NAME, DEVICE_UUID);
@@ -130,6 +130,7 @@ CLIENT.on("chat", async (data, channel) => {
     }
   }
 
+  /*
   // 셀렉션 명령어 확인부
   let selection_result = _.find(RANDOM_SELECTION, (selection) => {
     return selection.command.includes(data_split[0]);
@@ -160,6 +161,8 @@ CLIENT.on("chat", async (data, channel) => {
       channel.sendChat("매개변수가 잘못되었습니다.");
     }
   }
+  */
+  await commandValidator(data, channel);
 
   if (data.text.endsWith("확률")) {
     channel.sendChat(

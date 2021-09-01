@@ -9,3 +9,4 @@ constants
 #setting
 config
 logs
+node_modules
