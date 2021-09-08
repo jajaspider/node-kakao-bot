@@ -3,9 +3,8 @@ chromedriver.exe
 
 # temp file
 start.sh
-test.js
-test2.js
 constants
+test
 #setting
 config/connection.js
 config/lostarkupdater-6592a098bcaf.json

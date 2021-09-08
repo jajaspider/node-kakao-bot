@@ -130,7 +130,6 @@ CLIENT.on("chat", async (data, channel) => {
     }
   }
 
-  /*
   // 셀렉션 명령어 확인부
   let selection_result = _.find(RANDOM_SELECTION, (selection) => {
     return selection.command.includes(data_split[0]);
@@ -161,8 +160,8 @@ CLIENT.on("chat", async (data, channel) => {
       channel.sendChat("매개변수가 잘못되었습니다.");
     }
   }
-  */
-  await commandValidator(data, channel);
+
+  // await commandValidator(data, channel);
 
   if (data.text.endsWith("확률")) {
     channel.sendChat(
