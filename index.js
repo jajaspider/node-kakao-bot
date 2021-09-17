@@ -137,36 +137,36 @@ CLIENT.on("chat", async (data, channel) => {
     }
   }
 
-  // 셀렉션 명령어 확인부
-  let selection_result = _.find(RANDOM_SELECTION, (selection) => {
-    return selection.command.includes(data_split[0]);
-  });
+  // // 셀렉션 명령어 확인부
+  // let selection_result = _.find(RANDOM_SELECTION, (selection) => {
+  //   return selection.command.includes(data_split[0]);
+  // });
 
-  // 셀렉션 명령어로 확인되었을 경우
-  if (selection_result) {
-    // 명령어의 매개변수가 1개일 경우 get
-    if (data_split.length === 1) {
-      let result = await selection.getSelection(selection_result.name);
-      channel.sendChat(
-        new node_kakao.ChatBuilder()
-        .append(new node_kakao.ReplyContent(data.chat))
-        .text(result)
-        .build(node_kakao.KnownChatType.REPLY)
-      );
-    }
-    // 명령어의 매개변수가 2개이상일 경우 post하여 신규값
-    else if (data_split.length >= 2 && selection_result.name != "channel") {
-      let name = data.text.replace(data_split[0] + " ", "");
-      let result = await selection.createSelection(
-        name,
-        String(data.getSenderInfo(channel)["nickname"]),
-        selection_result.name
-      );
-      channel.sendChat(result.message);
-    } else {
-      channel.sendChat("매개변수가 잘못되었습니다.");
-    }
-  }
+  // // 셀렉션 명령어로 확인되었을 경우
+  // if (selection_result) {
+  //   // 명령어의 매개변수가 1개일 경우 get
+  //   if (data_split.length === 1) {
+  //     let result = await selection.getSelection(selection_result.name);
+  //     channel.sendChat(
+  //       new node_kakao.ChatBuilder()
+  //       .append(new node_kakao.ReplyContent(data.chat))
+  //       .text(result)
+  //       .build(node_kakao.KnownChatType.REPLY)
+  //     );
+  //   }
+  //   // 명령어의 매개변수가 2개이상일 경우 post하여 신규값
+  //   else if (data_split.length >= 2 && selection_result.name != "channel") {
+  //     let name = data.text.replace(data_split[0] + " ", "");
+  //     let result = await selection.createSelection(
+  //       name,
+  //       String(data.getSenderInfo(channel)["nickname"]),
+  //       selection_result.name
+  //     );
+  //     channel.sendChat(result.message);
+  //   } else {
+  //     channel.sendChat("매개변수가 잘못되었습니다.");
+  //   }
+  // }
 
   let service = commonCommandValidator(data.text);
   // if fail find command
