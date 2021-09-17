@@ -173,8 +173,8 @@ CLIENT.on("chat", async (data, channel) => {
   // if (!service) {
   //   return;
   // }
-
-  if (service.name == "SELECTION") {
+  let serviceName = _.get(service, "name");
+  if (!serviceName && serviceName == "SELECTION") {
     if (messageSplit.length === 1) {
       let result = await selection.getSelection(service.method.params);
       channel.sendChat(
