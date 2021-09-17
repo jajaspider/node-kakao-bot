@@ -170,9 +170,9 @@ CLIENT.on("chat", async (data, channel) => {
 
   let service = commonCommandValidator(data.text);
   // if fail find command
-  if (!service) {
-    return;
-  }
+  // if (!service) {
+  //   return;
+  // }
 
   if (service.name == "SELECTION") {
     if (messageSplit.length === 1) {
