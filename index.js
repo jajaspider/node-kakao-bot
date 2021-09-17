@@ -5,7 +5,9 @@ const schedule = require("node-schedule");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const webdriver = require("selenium-webdriver");
-const { By } = require("selenium-webdriver");
+const {
+  By
+} = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const shell = require("shelljs");
 const download = require("image-downloader");
@@ -13,10 +15,13 @@ const lostarkUpdater = require("./LostarkUpdater");
 const logger = require("./logger/index");
 const _ = require("lodash");
 const selection = require("./api/selection.js");
-const { RANDOM_SELECTION } = require("./config/constants.js");
-const { CONNECTION_INFO } = require("./config/connection.js");
+const {
+  CONNECTION_INFO
+} = require("./config/connection.js");
 const Utils = require("./utils.js");
-const { commandValidator } = require("./commandManager");
+const {
+  commonCommandValidator
+} = require("./commandManager");
 
 const DEVICE_UUID = CONNECTION_INFO.DEVICE_UUID;
 const DEVICE_NAME = CONNECTION_INFO.DEVICE_NAME;
@@ -61,6 +66,8 @@ let probability_update = schedule.scheduleJob("00 30 10 * * 4", function () {
 CLIENT.on("chat", async (data, channel) => {
   const sender = data.getSenderInfo(channel);
   let data_split = data.text.trim().split(" ");
+  // Change parameter name 21.09.17
+  let messageSplit = data.text.trim().split(" ");
   if (!sender) return;
 
   logger.debug(
@@ -142,9 +149,9 @@ CLIENT.on("chat", async (data, channel) => {
       let result = await selection.getSelection(selection_result.name);
       channel.sendChat(
         new node_kakao.ChatBuilder()
-          .append(new node_kakao.ReplyContent(data.chat))
-          .text(result)
-          .build(node_kakao.KnownChatType.REPLY)
+        .append(new node_kakao.ReplyContent(data.chat))
+        .text(result)
+        .build(node_kakao.KnownChatType.REPLY)
       );
     }
     // 명령어의 매개변수가 2개이상일 경우 post하여 신규값
@@ -161,14 +168,42 @@ CLIENT.on("chat", async (data, channel) => {
     }
   }
 
-  // await commandValidator(data, channel);
+  let service = commonCommandValidator(data.text);
+  // if fail find command
+  if (!service) {
+    return;
+  }
+
+  if (service.name == "SELECTION") {
+    if (messageSplit.length === 1) {
+      let result = await selection.getSelection(service.method.params);
+      channel.sendChat(
+        new node_kakao.ChatBuilder()
+        .append(new node_kakao.ReplyContent(data.chat))
+        .text(result)
+        .build(node_kakao.KnownChatType.REPLY)
+      );
+    }
+    // 명령어의 매개변수가 2개이상일 경우 post하여 신규값
+    else if (messageSplit.length >= 2 && service.method.params.type != "channel") {
+      let name = data.text.replace(messageSplit[0] + " ", "");
+      let result = await selection.createSelection(
+        name,
+        String(data.getSenderInfo(channel)["nickname"]),
+        service.method.params.type
+      );
+      channel.sendChat(result.message);
+    } else {
+      channel.sendChat("매개변수가 잘못되었습니다.");
+    }
+  }
 
   if (data.text.endsWith("확률")) {
     channel.sendChat(
       new node_kakao.ChatBuilder()
-        .append(new node_kakao.ReplyContent(data.chat))
-        .text("확률 : " + Utils.getPercent() + "%")
-        .build(node_kakao.KnownChatType.REPLY)
+      .append(new node_kakao.ReplyContent(data.chat))
+      .text("확률 : " + Utils.getPercent() + "%")
+      .build(node_kakao.KnownChatType.REPLY)
     );
   }
 
@@ -237,8 +272,8 @@ CLIENT.on("chat", async (data, channel) => {
 
         //이미지 확장자
         let ext = String(
-          channel["_chatListStore"]["_chatList"][i].attachment.url
-        )
+            channel["_chatListStore"]["_chatList"][i].attachment.url
+          )
           .split("/")
           .reverse()[0]
           .split(".")
@@ -254,7 +289,9 @@ CLIENT.on("chat", async (data, channel) => {
 
         download
           .image(options)
-          .then(({ filename }) => {
+          .then(({
+            filename
+          }) => {
             console.log("Saved to", filename); // saved to /path/to/dest/photo.jpg
             channel.sendChat("등록되었습니다.");
           })
@@ -542,7 +579,7 @@ const getCollection = async (channel, characterName) => {
 
     await driver.get(
       "https://lostark.game.onstove.com/Profile/Character/" +
-        encodeURI(characterName)
+      encodeURI(characterName)
     );
     await driver.sleep(2000);
     const collectionButton = await driver.findElement(
@@ -712,9 +749,9 @@ async function lostark_notice_check(html) {
         fs.appendFileSync(
           file_name,
           title_list[idx].children[0]["data"] +
-            "|" +
-            title_href[idx].attribs.href +
-            "\n",
+          "|" +
+          title_href[idx].attribs.href +
+          "\n",
           (err) => {
             if (err) console.log(err);
           }
@@ -782,9 +819,9 @@ async function maplestory_notice_check(html) {
         fs.appendFileSync(
           file_name,
           title_list[idx].children[0]["data"] +
-            "|" +
-            title_href[idx].attribs.href +
-            "\n",
+          "|" +
+          title_href[idx].attribs.href +
+          "\n",
           (err) => {
             if (err) console.log(err);
           }
