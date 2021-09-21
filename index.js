@@ -346,7 +346,7 @@ CLIENT.on("chat", async (data, channel) => {
   }
 
   if (data_split[0] === "!모험섬" || data_split[0] === "!ㅁㅎㅅ") {
-    getAdventureIsland(channel);
+    channel.sendChat(lostarkIsland());
   }
 
   if (data_split[0] === "!공지" || data_split[0] === "!ㄱㅈ") {
@@ -480,6 +480,86 @@ CLIENT.on("chat", async (data, channel) => {
       break;
   }
 });
+
+async function lostarkIsland() {
+  let islandList = [
+    "하모니섬",
+    "기회의섬",
+    "볼라르섬",
+    "메데이아",
+    "포르페",
+    "몬테섬",
+    "수라도",
+    "고요한안식의섬",
+    "죽음의협곡",
+    "블루홀",
+    "쿵덕쿵아일랜드",
+    "스오누팡아일랜드",
+    "환영나비섬",
+    "우거진갈대의섬",
+  ];
+  let payload = {
+    server: "kr",
+    date: "2021-09",
+  };
+
+  let result = await axios.post(
+    "https://ark-api.bynn.kr/calendar/query",
+    payload
+  );
+
+  let adventureIslandList = _.get(result.data, "adventureIslandList");
+  // console.dir(adventureIslandList, {
+  //     depth: null
+  // });
+
+  let currentDate = getCurrentDate();
+  // console.log(currentDate);
+
+  let adventureIslands = _.filter(adventureIslandList, (object) => {
+    return String(object.date).indexOf(currentDate) != -1;
+  });
+
+  // console.log(adventureIslands);
+
+  let returnString = "[모험섬]";
+  for (let adventureIsland of adventureIslands) {
+    let islandName = islandList[Number.parseInt(adventureIsland.islandIdx)];
+    let islandTime = `${adventureIsland.date}시`;
+    let islandReward = null;
+    if (adventureIsland.rewardId == "OCEAN") {
+      islandReward = "항해주화";
+    }
+    if (adventureIsland.rewardId == "SILING") {
+      islandReward = "실링";
+    }
+    if (adventureIsland.rewardId == "CARD") {
+      islandReward = "카드";
+    }
+    if (adventureIsland.rewardId == "GOLD") {
+      islandReward = "골드";
+    }
+
+    returnString =
+      returnString + `\n\n${islandName}\n${islandTime}\n보상 : ${islandReward}`;
+  }
+
+  console.log(returnString);
+  return returnString;
+}
+
+function getCurrentDate() {
+  let date = new Date();
+  let year = date.getFullYear().toString();
+
+  let month = date.getMonth() + 1;
+  month = month < 10 ? "0" + month.toString() : month.toString();
+
+  let day = date.getDate();
+  day = day < 10 ? "0" + day.toString() : day.toString();
+
+  return `${year}-${month}-${day}`;
+}
 
 function lostarkEmoticonList() {
   let loa_folder = "./로아이미지";
