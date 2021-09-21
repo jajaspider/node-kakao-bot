@@ -346,7 +346,7 @@ CLIENT.on("chat", async (data, channel) => {
   }
 
   if (data_split[0] === "!모험섬" || data_split[0] === "!ㅁㅎㅅ") {
-    channel.sendChat(lostarkIsland());
+    channel.sendChat(await lostarkIsland());
   }
 
   if (data_split[0] === "!공지" || data_split[0] === "!ㄱㅈ") {
@@ -544,7 +544,7 @@ async function lostarkIsland() {
       returnString + `\n\n${islandName}\n${islandTime}\n보상 : ${islandReward}`;
   }
 
-  console.log(returnString);
+  // console.log(returnString);
   return returnString;
 }
 
