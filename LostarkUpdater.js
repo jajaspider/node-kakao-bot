@@ -22,7 +22,7 @@ async function deletesheet(sheetNumber) {
   // 기존 포맷 전부 삭제 및 데이터 삭제
   for (let i = 0; i < guildUserCount + 1; i += 1) {
     for (let j = 0; j < guildCharacterCount + 1; j += 1) {
-      sheet.getCell(62 + i, 3 + j).clearAllFormatting();
+      sheet.getCell(61 + i, 3 + j).clearAllFormatting();
     }
   }
   await sheet.saveUpdatedCells();
@@ -135,7 +135,7 @@ async function writeArray(sheetNumber, characterList) {
   // 0 -> B
   let column = 2;
   //{ red: 0.7882353, green: 0.85490197, blue: 0.972549 }
-  let low = 63;
+  let low = 71;
   let max = 1;
   // let currentSection = 0;
 
