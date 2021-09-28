@@ -4,7 +4,7 @@ const { GoogleSpreadsheet } = require("google-spreadsheet");
 const _ = require("lodash");
 const { SPREADSHEET_INFO } = require("./config/connection.js");
 
-let guildUserCount = 18;
+let guildUserCount = 19;
 let guildCharacterCount = 15;
 const creds = require("./config/lostarkupdater-6592a098bcaf.json");
 const doc = new GoogleSpreadsheet(SPREADSHEET_INFO.JSKEY);
@@ -28,8 +28,8 @@ async function deletesheet(sheetNumber) {
   await sheet.saveUpdatedCells();
   for (let i = 0; i < guildUserCount + 1; i += 1) {
     for (let j = 0; j < guildCharacterCount; j += 1) {
-      sheet.getCell(62 + i, 3 + j).value = "";
-      sheet.getCell(62 + i, 3 + j).backgroundColor = {
+      sheet.getCell(71 + i, 3 + j).value = "";
+      sheet.getCell(71 + i, 3 + j).backgroundColor = {
         red: 0.9372549,
         green: 0.9372549,
         blue: 0.9372549,
@@ -140,62 +140,33 @@ async function writeArray(sheetNumber, characterList) {
   // let currentSection = 0;
 
   let levelSection = [
-    // {level: '1475', backgroundColor: {"red": 255, "green": 0, "blue": 0, "alpha": 255}},
+    {
+      level: "1490",
+      backgroundColor: { red: 0.91764706, green: 0.6, blue: 0.6 },
+    },
+    {
+      level: "1475",
+      backgroundColor: { red: 0.8117647, green: 0.8862745, blue: 0.9529412 },
+    },
     {
       level: "1460",
-      backgroundColor: {
-        red: 0.8117647,
-        green: 0.8862745,
-        blue: 0.9529412,
-      },
+      backgroundColor: { red: 0.7882353, green: 0.85490197, blue: 0.972549 },
     },
     {
       level: "1445",
-      backgroundColor: {
-        red: 0.7882353,
-        green: 0.85490197,
-        blue: 0.972549,
-      },
+      backgroundColor: { red: 0.95686275, green: 0.8, blue: 0.8 },
     },
     {
       level: "1430",
-      backgroundColor: {
-        red: 0.95686275,
-        green: 0.8,
-        blue: 0.8,
-      },
+      backgroundColor: { red: 0.9882353, green: 0.8980392, blue: 0.8039216 },
     },
     {
       level: "1415",
-      backgroundColor: {
-        red: 0.9882353,
-        green: 0.8980392,
-        blue: 0.8039216,
-      },
-    },
-    {
-      level: "1400",
-      backgroundColor: {
-        red: 0.8509804,
-        green: 0.8235294,
-        blue: 0.9137255,
-      },
+      backgroundColor: { red: 0.8509804, green: 0.8235294, blue: 0.9137255 },
     },
     {
       level: "1370",
-      backgroundColor: {
-        red: 0.8156863,
-        green: 0.8784314,
-        blue: 0.8901961,
-      },
-    },
-    {
-      level: "1325",
-      backgroundColor: {
-        red: 1,
-        green: 0.9490196,
-        blue: 0.8,
-      },
+      backgroundColor: { red: 0.8156863, green: 0.8784314, blue: 0.8901961 },
     },
   ];
 
@@ -243,7 +214,8 @@ async function getFormat() {
   const sheet = doc.sheetsByIndex[3];
   await sheet.loadCells();
 
-  const sectionCell = sheet.getCell(29, 2);
+  const sectionCell = sheet.getCell(16, 6);
+  console.log(sectionCell);
   console.log(sectionCell.backgroundColor);
 }
 
