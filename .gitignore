@@ -1,11 +1,19 @@
+node_modules
 *.txt
-chromedriver.exe
 
-# temp file
-start.sh
-test.js
-test2.js
+#temp
+test
 constants
+
+#data
+보스
+로아이미지
+무토
+알림
+MVP
+
 #setting
 config
 logs
+chromedriver.exe
+chromedriver
