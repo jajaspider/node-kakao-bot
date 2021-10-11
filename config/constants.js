@@ -88,6 +88,16 @@ const COMMAND_EMOTICONLIST = {
   ],
 };
 
+const COMMAND_ADVENTURE_ISLAND = {
+  methods: [
+    {
+      name: "!모험섬",
+      alias: ["!ㅁㅎㅅ"],
+      description: "도움말에쓸말",
+    },
+  ],
+};
+
 /**
  * description : 관리자 명령어
  */
@@ -108,6 +118,7 @@ const MAPLESTORY_COMMAND = {
 };
 const LOSTARK_COMMAND = {
   EMOTICONLIST: COMMAND_EMOTICONLIST,
+  ISLAND: COMMAND_ADVENTURE_ISLAND,
 };
 const COMMON_COMMAND = {
   HELP: COMMAND_HELP,
