@@ -136,14 +136,12 @@ class Carp {
           blue: 0.9372549,
         };
       }
-      await this.sheet.saveUpdatedCells();
-
       for (let j = this.columnCount + 1; j < this.columnCount + 20; j += 1) {
         let currentCell = this.sheet.getCell(i, j);
         currentCell.value = "";
       }
-      await this.sheet.saveUpdatedCells();
     }
+    await this.sheet.saveUpdatedCells();
   }
 
   async writeArray() {
@@ -201,7 +199,6 @@ class Carp {
         //k 는 캐릭터 갯수
         for (let k = 0; k < this.charactersDatail[j].length; ) {
           let currentCell = this.sheet.getCell(row + 1 + j, column + width);
-          // console.log(`${j} ${k} ${characterArray[j][k][1]}`);
           if (
             Number.parseInt(this.charactersDatail[j][k][1]) >=
             Number.parseInt(levelSection[i].level)
@@ -209,7 +206,6 @@ class Carp {
             currentCell.value = String(this.charactersDatail[j][k][0]);
             currentCell.backgroundColor = levelSection[i].backgroundColor;
             currentCell.horizontalAlignment = "CENTER";
-            // console.dir(characterArray[j]);
             this.charactersDatail[j].shift();
             width += 1;
           } else {
@@ -233,7 +229,7 @@ class Carp {
     await carp.deletesheet();
     await carp.writeArray();
 
-    await this.sheet.saveUpdatedCells();
+    await carp.sheet.saveUpdatedCells();
 
     return "완료되었습니다.";
   }
