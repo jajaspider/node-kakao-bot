@@ -1,12 +1,22 @@
+node_modules
 *.txt
-chromedriver.exe
 
 # temp file
 start.sh
-constants
 test
 #setting
 config/connection.js
 config/lostarkupdater-6592a098bcaf.json
 logs
 node_modules
+
+#data
+보스
+로아이미지
+무토
+알림
+MVP
+
+#setting
+chromedriver.exe
+chromedriver
