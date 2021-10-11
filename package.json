@@ -12,6 +12,7 @@
     "image-downloader": "^4.0.3",
     "jsdom": "^16.6.0",
     "lodash": "^4.17.21",
+    "mysql": "^2.18.1",
     "node-kakao": "^4.4.0",
     "node-schedule": "^2.0.0",
     "request": "^2.88.2",
