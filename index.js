@@ -205,7 +205,7 @@ CLIENT.on("chat", async (data, channel) => {
       "노바",
     ];
 
-    if (data_spmessageSplitlit.length === 1) {
+    if (messageSplit.length === 1) {
       meso_info(channel, "엘리시움");
     }
     if (messageSplit.length === 2) {
@@ -219,11 +219,11 @@ CLIENT.on("chat", async (data, channel) => {
   /**
    * description : 로스트아크 명령어
    */
-  if (lostarkServiceName == "commonService") {
+  if (lostarkServiceName == "EMOTICONLIST") {
     let emoticonList = lostarkEmoticonList();
-    channel.sendChat(
-      `사용 가능한 이모티콘 목록\n\n ${COMPRES} ${emoticonList}`
-    );
+    channel.sendChat(`사용 가능한 이모티콘 목록\n ${COMPRES} ${emoticonList}`);
+  } else if (lostarkServiceName == "ISLAND") {
+    channel.sendChat(await lostarkIsland());
   }
 
   if (data.text.endsWith("확률")) {
@@ -343,10 +343,6 @@ CLIENT.on("chat", async (data, channel) => {
     if (data_split.length === 2) {
       getCollection(channel, data_split[1]);
     }
-  }
-
-  if (data_split[0] === "!모험섬" || data_split[0] === "!ㅁㅎㅅ") {
-    channel.sendChat(await lostarkIsland());
   }
 
   if (data_split[0] === "!공지" || data_split[0] === "!ㄱㅈ") {
@@ -500,7 +496,7 @@ async function lostarkIsland() {
   ];
   let payload = {
     server: "kr",
-    date: "2021-09",
+    date: `${new Date().getFullYear()}-${new Date().getMonth() + 1}`,
   };
 
   let result = await axios.post(
@@ -510,7 +506,7 @@ async function lostarkIsland() {
 
   let adventureIslandList = _.get(result.data, "adventureIslandList");
   // console.dir(adventureIslandList, {
-  //     depth: null
+  //   depth: null,
   // });
 
   let currentDate = getCurrentDate();
