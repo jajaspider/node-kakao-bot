@@ -1,7 +1,11 @@
 const axios = require("axios");
 
-async function createSelection(name, author, type) {
-  let params = { name, author, type };
+async function createSelection(name, author, params) {
+  let requestBody = {
+    name,
+    author,
+    type: params.type
+  };
   try {
     let result = await axios.post("http://localhost:3000/selection", params);
     // console.log(result.data);
@@ -11,9 +15,9 @@ async function createSelection(name, author, type) {
   }
 }
 
-async function getSelection(type) {
+async function getSelection(params) {
   try {
-    let result = await axios.get(`http://localhost:3000/selection/${type}`);
+    let result = await axios.get(`http://localhost:3000/selection/${params.type}`);
     // console.log(result);
     return result.data;
   } catch (e) {
@@ -21,4 +25,7 @@ async function getSelection(type) {
   }
 }
 
-module.exports = { createSelection, getSelection };
+module.exports = {
+  createSelection,
+  getSelection
+};
