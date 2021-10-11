@@ -140,7 +140,7 @@ CLIENT.on("chat", async (data, channel) => {
    */
   if (commonServiceName == "SELECTION") {
     if (messageSplit.length === 1) {
-      let result = await selection.getSelection(service.method.params);
+      let result = await selection.getSelection(commonService.method.params);
       channel.sendChat(
         new node_kakao.ChatBuilder()
           .append(new node_kakao.ReplyContent(data.chat))
@@ -149,13 +149,13 @@ CLIENT.on("chat", async (data, channel) => {
       );
     } else if (
       messageSplit.length >= 2 &&
-      service.method.params.type != "channel"
+      commonService.method.params.type != "channel"
     ) {
       let name = data.text.replace(messageSplit[0] + " ", "");
       let result = await selection.createSelection(
         name,
         String(data.getSenderInfo(channel)["nickname"]),
-        service.method.params.type
+        commonService.method.params.type
       );
       channel.sendChat(result.message);
     } else {
