@@ -136,6 +136,16 @@ class Carp {
           blue: 0.9372549,
         };
       }
+<<<<<<< HEAD
+      for (let j = this.columnCount + 1; j < this.columnCount + 20; j += 1) {
+        let currentCell = this.sheet.getCell(i, j);
+        currentCell.value = "";
+      }
+    }
+    await this.sheet.saveUpdatedCells();
+  }
+
+=======
       await this.sheet.saveUpdatedCells();
 
       for (let j = this.columnCount + 1; j < this.columnCount + 20; j += 1) {
@@ -146,6 +156,7 @@ class Carp {
     }
   }
 
+>>>>>>> ad46f31cd26186f2a3604d36d1863e4d56492688
   async writeArray() {
     let row = this.rowCount + 1;
     let column = this.columnCount;
@@ -201,7 +212,10 @@ class Carp {
         //k 는 캐릭터 갯수
         for (let k = 0; k < this.charactersDatail[j].length; ) {
           let currentCell = this.sheet.getCell(row + 1 + j, column + width);
+<<<<<<< HEAD
+=======
           // console.log(`${j} ${k} ${characterArray[j][k][1]}`);
+>>>>>>> ad46f31cd26186f2a3604d36d1863e4d56492688
           if (
             Number.parseInt(this.charactersDatail[j][k][1]) >=
             Number.parseInt(levelSection[i].level)
@@ -209,7 +223,10 @@ class Carp {
             currentCell.value = String(this.charactersDatail[j][k][0]);
             currentCell.backgroundColor = levelSection[i].backgroundColor;
             currentCell.horizontalAlignment = "CENTER";
+<<<<<<< HEAD
+=======
             // console.dir(characterArray[j]);
+>>>>>>> ad46f31cd26186f2a3604d36d1863e4d56492688
             this.charactersDatail[j].shift();
             width += 1;
           } else {
@@ -233,7 +250,11 @@ class Carp {
     await carp.deletesheet();
     await carp.writeArray();
 
+<<<<<<< HEAD
+    await carp.sheet.saveUpdatedCells();
+=======
     await this.sheet.saveUpdatedCells();
+>>>>>>> ad46f31cd26186f2a3604d36d1863e4d56492688
 
     return "완료되었습니다.";
   }
