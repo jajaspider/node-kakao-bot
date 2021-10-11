@@ -13,9 +13,9 @@ const lostarkUpdater = require("./LostarkUpdater");
 const logger = require("./logger/index");
 const _ = require("lodash");
 const selection = require("./api/selection.js");
-const { RANDOM_SELECTION } = require("./config/constants.js");
 const { CONNECTION_INFO } = require("./config/connection.js");
 const Utils = require("./utils.js");
+const commandManager = require("./commandManager");
 
 const DEVICE_UUID = CONNECTION_INFO.DEVICE_UUID;
 const DEVICE_NAME = CONNECTION_INFO.DEVICE_NAME;
@@ -24,7 +24,6 @@ const PASSWORD = CONNECTION_INFO.PASSWORD;
 const CLIENT = new node_kakao.TalkClient();
 
 const COMPRES = "\u200b".repeat(500);
-let channel_test = [];
 
 async function main() {
   const api = await node_kakao.AuthApiClient.create(DEVICE_NAME, DEVICE_UUID);
@@ -46,8 +45,8 @@ async function main() {
 }
 
 let notice_croll = schedule.scheduleJob("00 0-59 * * * *", function () {
-  maplestory_notice();
-  lostark_notice();
+  // maplestory_notice();
+  // lostark_notice();
 });
 
 let probability_update = schedule.scheduleJob("00 30 10 * * 4", function () {
@@ -61,6 +60,8 @@ let probability_update = schedule.scheduleJob("00 30 10 * * 4", function () {
 CLIENT.on("chat", async (data, channel) => {
   const sender = data.getSenderInfo(channel);
   let data_split = data.text.trim().split(" ");
+  // Change parameter name 21.09.17
+  let messageSplit = data.text.trim().split(" ");
   if (!sender) return;
 
   logger.debug(
@@ -96,7 +97,7 @@ CLIENT.on("chat", async (data, channel) => {
   }
   // 관리자 링크ID값 '116430197'
   if (String(sender["linkId"]) === "116430197") {
-    if (data_split[0] === "파일") {
+    if (messageSplit[0] === "파일") {
       try {
         let file_data = fs.readFileSync(`./${data_split[1]}.txt`, "utf8");
         channel.sendChat(file_data);
@@ -124,36 +125,37 @@ CLIENT.on("chat", async (data, channel) => {
           break;
       }
     }
-
-    if (data_split[0] === "!재부팅") {
-      shell.exec("sudo pkill -9 -ef node");
-    }
   }
 
-  // 셀렉션 명령어 확인부
-  let selection_result = _.find(RANDOM_SELECTION, (selection) => {
-    return selection.command.includes(data_split[0]);
-  });
-
-  // 셀렉션 명령어로 확인되었을 경우
-  if (selection_result) {
-    // 명령어의 매개변수가 1개일 경우 get
-    if (data_split.length === 1) {
-      let result = await selection.getSelection(selection_result.name);
+  let commonService = commandManager.commonCommandValidator(data.text);
+  let maplestoryService = commandManager.maplestoryCommandValidator(data.text);
+  let lostarkService = commandManager.lostarkCommandValidator(data.text);
+  console.dir({ commonService, maplestoryService, lostarkService });
+  let commonServiceName = _.get(commonService, "name");
+  let maplestoryServiceName = _.get(maplestoryService, "name");
+  let lostarkServiceName = _.get(lostarkService, "name");
+  console.dir({ commonServiceName, maplestoryService, lostarkService });
+  /**
+   * description :  기본 명령어
+   */
+  if (commonServiceName == "SELECTION") {
+    if (messageSplit.length === 1) {
+      let result = await selection.getSelection(service.method.params);
       channel.sendChat(
         new node_kakao.ChatBuilder()
           .append(new node_kakao.ReplyContent(data.chat))
           .text(result)
           .build(node_kakao.KnownChatType.REPLY)
       );
-    }
-    // 명령어의 매개변수가 2개이상일 경우 post하여 신규값
-    else if (data_split.length >= 2 && selection_result.name != "channel") {
-      let name = data.text.replace(data_split[0] + " ", "");
+    } else if (
+      messageSplit.length >= 2 &&
+      service.method.params.type != "channel"
+    ) {
+      let name = data.text.replace(messageSplit[0] + " ", "");
       let result = await selection.createSelection(
         name,
         String(data.getSenderInfo(channel)["nickname"]),
-        selection_result.name
+        service.method.params.type
       );
       channel.sendChat(result.message);
     } else {
@@ -161,24 +163,16 @@ CLIENT.on("chat", async (data, channel) => {
     }
   }
 
-  if (data.text.endsWith("확률")) {
-    channel.sendChat(
-      new node_kakao.ChatBuilder()
-        .append(new node_kakao.ReplyContent(data.chat))
-        .text("확률 : " + Utils.getPercent() + "%")
-        .build(node_kakao.KnownChatType.REPLY)
-    );
-  }
-
-  if (
-    data.text.split(" ")[0] === "!무토" ||
-    data.text.split(" ")[0] === "!ㅁㅌ"
-  ) {
+  /**
+   * description :  메이플스토리 명령어
+   */
+  if (maplestoryServiceName == "MUTO") {
+    // 2021.10.11 S3로 변경 예정
     let muto_folder = "./무토";
     fs.readdir(muto_folder, function (error, filelist) {
       let idx = 0;
       while (idx < filelist.length) {
-        if (data_split[1] === filelist[idx].split(".")[0]) {
+        if (messageSplit[1] === filelist[idx].split(".")[0]) {
           let file_name = muto_folder + "/" + filelist[idx];
 
           let dimensions = image_size(file_name);
@@ -193,6 +187,52 @@ CLIENT.on("chat", async (data, channel) => {
         idx += 1;
       }
     });
+  } else if (maplestoryServiceName == "BOSS") {
+    channel.sendChat(boss_info(messageSplit[1], messageSplit[2]));
+  } else if (maplestoryServiceName == "MESO") {
+    let servers = [
+      "스카니아",
+      "베라",
+      "루나",
+      "제니스",
+      "크로아",
+      "유니온",
+      "엘리시움",
+      "이노시스",
+      "레드",
+      "오로라",
+      "아케인",
+      "노바",
+    ];
+
+    if (data_spmessageSplitlit.length === 1) {
+      meso_info(channel, "엘리시움");
+    }
+    if (messageSplit.length === 2) {
+      if (servers.indexOf(messageSplit[1]) !== -1) {
+        meso_info(channel, messageSplit[1]);
+      } else {
+        channel.sendChat("잘못된 서버 이름입니다.");
+      }
+    }
+  }
+  /**
+   * description : 로스트아크 명령어
+   */
+  if (lostarkServiceName == "commonService") {
+    let emoticonList = lostarkEmoticonList();
+    channel.sendChat(
+      `사용 가능한 이모티콘 목록\n\n ${COMPRES} ${emoticonList}`
+    );
+  }
+
+  if (data.text.endsWith("확률")) {
+    channel.sendChat(
+      new node_kakao.ChatBuilder()
+        .append(new node_kakao.ReplyContent(data.chat))
+        .text("확률 : " + Utils.getPercent() + "%")
+        .build(node_kakao.KnownChatType.REPLY)
+    );
   }
 
   let loa_folder = "./로아이미지";
@@ -213,11 +253,6 @@ CLIENT.on("chat", async (data, channel) => {
       idx += 1;
     }
   });
-
-  if (data_split[0] === "!이모티콘목록") {
-    let emoticonList = lostarkEmoticonList();
-    channel.sendChat("사용 가능한 이모티콘 목록\n\n" + COMPRES + emoticonList);
-  }
 
   if (data_split[0] === "!이모티콘등록") {
     // data.chat['attachment']['src_message'] == 사진
@@ -291,46 +326,6 @@ CLIENT.on("chat", async (data, channel) => {
       channel.sendChat(
         register_contents(data_split[1], String(channel.channelId))
       );
-    }
-  }
-
-  if (
-    data_split[0] === "!보스" ||
-    data_split[0] === "!ㅄ" ||
-    data_split[0] === "!ㅂㅅ"
-  ) {
-    if (data_split.length === 2) {
-      channel.sendChat(boss_info(data_split[1], "하드"));
-    } else if (data_split.length === 3) {
-      channel.sendChat(boss_info(data_split[1], data_split[2]));
-    }
-  }
-
-  if (data_split[0] === "!메소" || data_split[0] === "!ㅁㅅ") {
-    let server_list = [
-      "스카니아",
-      "베라",
-      "루나",
-      "제니스",
-      "크로아",
-      "유니온",
-      "엘리시움",
-      "이노시스",
-      "레드",
-      "오로라",
-      "아케인",
-      "노바",
-    ];
-
-    if (data_split.length === 1) {
-      meso_info(channel, "엘리시움");
-    }
-    if (data_split.length === 2) {
-      if (server_list.indexOf(data_split[1]) !== -1) {
-        meso_info(channel, data_split[1]);
-      } else {
-        channel.sendChat("잘못된 서버 이름입니다.");
-      }
     }
   }
 
@@ -824,7 +819,7 @@ function notification_status(channelId) {
   return return_string;
 }
 
-function boss_info(boss_name, boss_level) {
+function boss_info(boss_name, boss_level = "하드") {
   let file_name = "./보스/" + boss_name + " " + boss_level + ".txt";
 
   try {

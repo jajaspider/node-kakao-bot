@@ -1,9 +1,14 @@
 node_modules
 *.txt
 
-#temp
+# temp file
+start.sh
 test
-constants
+#setting
+config/connection.js
+config/lostarkupdater-6592a098bcaf.json
+logs
+node_modules
 
 #data
 보스
@@ -13,7 +18,5 @@ constants
 MVP
 
 #setting
-config
-logs
 chromedriver.exe
 chromedriver
