@@ -9,7 +9,7 @@ const { By } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const shell = require("shelljs");
 const download = require("image-downloader");
-const lostarkUpdater = require("./LostarkUpdater");
+const { Carp } = require("./LostarkUpdater");
 const logger = require("./logger/index");
 const _ = require("lodash");
 const selection = require("./api/selection.js");
@@ -89,10 +89,12 @@ CLIENT.on("chat", async (data, channel) => {
           data.getSenderInfo(channel)["nickname"]
         )}님이 시트업데이트 시작`
       );
-      lostarkUpdater.sheetControl().then((r) => {
+      let carp = new Carp();
+      let updateResult = await carp.run();
+      if (updateResult) {
         channel.sendChat("완료되었습니다.");
         logger.debug(`${String(data.getSenderInfo(channel)["nickname"])}완료`);
-      });
+      }
     }
   }
   // 관리자 링크ID값 '116430197'
