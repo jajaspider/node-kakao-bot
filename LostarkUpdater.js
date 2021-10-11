@@ -5,9 +5,6 @@ const { runInContext } = require("lodash");
 const _ = require("lodash");
 const { SPREADSHEET_INFO } = require("./config/connection.js");
 
-let guildUserCount = 19;
-let guildCharacterCount = 15;
-
 class Carp {
   constructor() {
     this.userCount = 0;
@@ -19,8 +16,6 @@ class Carp {
     this.characterExpand = [];
     this.charactersDatail = [];
   }
-
-  update() {}
 
   async loadSpreadSheet() {
     await this.doc.useServiceAccountAuth(this.creds);
@@ -229,6 +224,7 @@ class Carp {
   }
 
   async run() {
+    let carp = new Carp();
     await carp.loadSpreadSheet();
     await carp.findIndex();
     await carp.findCharacter();
@@ -238,12 +234,11 @@ class Carp {
     await carp.writeArray();
 
     await this.sheet.saveUpdatedCells();
+
+    return "완료되었습니다.";
   }
 }
 
 module.exports = {
   Carp,
 };
-
-let carp = new Carp();
-carp.run();
