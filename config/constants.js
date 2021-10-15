@@ -34,7 +34,7 @@ const COMMAND_HELP = {
   methods: [
     {
       name: "!도움말",
-      alias: [""],
+      alias: ["!ㄷㅇㅁ"],
       params: {},
       description: "도움말을 보여줍니다.",
     },
@@ -69,6 +69,16 @@ const COMMAND_MESO = {
     {
       name: "!메소",
       alias: ["!ㅁㅅ"],
+      description: "도움말에쓸말",
+    },
+  ],
+};
+
+const COMMAND_INFO = {
+  methods: [
+    {
+      name: "!정보",
+      alias: ["!ㅈㅂ"],
       description: "도움말에쓸말",
     },
   ],
@@ -115,6 +125,7 @@ const MAPLESTORY_COMMAND = {
   MUTO: COMMAND_MUTO,
   BOSS: COMMAND_BOSS,
   MESO: COMMAND_MESO,
+  INFO: COMMAND_INFO,
 };
 const LOSTARK_COMMAND = {
   EMOTICONLIST: COMMAND_EMOTICONLIST,

@@ -16,6 +16,7 @@ const selection = require("./api/selection.js");
 const { CONNECTION_INFO } = require("./config/connection.js");
 const Utils = require("./utils.js");
 const commandManager = require("./commandManager");
+const router = require("./src/routers");
 
 const DEVICE_UUID = CONNECTION_INFO.DEVICE_UUID;
 const DEVICE_NAME = CONNECTION_INFO.DEVICE_NAME;
@@ -76,6 +77,13 @@ CLIENT.on("chat", async (data, channel) => {
       } 명령어 사용 / 내용 : ${data.text}`
     );
   }
+  // 요청들어옴
+  // 방 번호를 보고
+  // 이방의 타입을 확인 ( 메이플) => COMMON,MAPLESTORY
+
+  // 메이플과 로아, COMMON,MAPLE(!정보),LOA(!정보)
+
+  // 채팅방넘버, 작성자, 채팅값
 
   // 디디님 userId 값 '8395929431908745003'
   if (
@@ -217,6 +225,13 @@ CLIENT.on("chat", async (data, channel) => {
         channel.sendChat("잘못된 서버 이름입니다.");
       }
     }
+  } else if (maplestoryServiceName == "INFO") {
+    if (messageSplit.length == 1) {
+      //!정보
+    } else if (messageSplit.length == 2) {
+      //!정보 럭댄
+    }
+    // String(data.getSenderInfo(channel)["nickname"]).split("/")[0].trim();
   }
   /**
    * description : 로스트아크 명령어
