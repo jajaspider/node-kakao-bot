@@ -1,6 +1,6 @@
 {
-  "name": "kakaobot",
-  "version": "1.0.0",
+  "name": "sonabot",
+  "version": "0.0.1",
   "dependencies": {
     "app-root-path": "^3.0.0",
     "axios": "^0.21.1",
@@ -25,5 +25,21 @@
   "devDependencies": {
     "image-size": "^1.0.0",
     "xpath": "0.0.32"
-  }
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jajaspider/node-kakao-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jajaspider/node-kakao-bot/issues"
+  },
+  "homepage": "https://github.com/jajaspider/node-kakao-bot#readme",
+  "description": ""
 }
