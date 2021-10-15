@@ -1,0 +1,3 @@
+[submodule "node-kakaolink"]
+	path = node-kakaolink
+	url = https://github.com/cjh980402/node-kakaolink
