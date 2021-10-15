@@ -4,7 +4,7 @@ const process = require("process");
 
 const { combine, timestamp, label, printf } = winston.format;
 
-let today = new Date();
+let today = new Date().toISOString();
 
 const logFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`; // log 출력 포맷 정의
@@ -14,9 +14,7 @@ const options = {
   // log파일
   file: {
     level: "info",
-    filename: `${appRoot}/logs/${today.getFullYear()}${
-      today.getMonth() + 1
-    }${today.getDate()}.log`, // 로그파일을 남길 경로
+    filename: `${appRoot}/logs/${today.split("T")[0]}.log`, // 로그파일을 남길 경로
     handleExceptions: true,
     json: false,
     maxsize: 5242880, // 5MB
