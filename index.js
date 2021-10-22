@@ -310,6 +310,18 @@ CLIENT.on("chat", async (data, channel) => {
     }
   }
 
+  if (
+    messageSplit[0] == "!앱솔랩스" ||
+    messageSplit[0] == "!아케인" ||
+    messageSplit[0] == "!셰이드"
+  ) {
+    let result = await equipment(messageSplit[0], messageSplit[1]);
+    if (!result) {
+      channel.sendChat("잘못입력하셨습니다.");
+      return;
+    }
+    channel.sendChat(result);
+  }
   if (data.text === "!도움말") {
     let help_data = fs.readFileSync("./help.txt", "utf8");
     let return_string =
@@ -1126,6 +1138,201 @@ function register_contents(contents, channelId) {
     });
     return contents + " 알림 Off -> ON";
   }
+}
+
+let absolabArmor = [
+  "앱솔랩스나이트글러브",
+  "앱솔랩스나이트숄더",
+  "앱솔랩스나이트슈즈",
+  "앱솔랩스나이트슈트",
+  "앱솔랩스나이트케이프",
+  "앱솔랩스나이트헬름",
+  "앱솔랩스메이지글러브",
+  "앱솔랩스메이지숄더",
+  "앱솔랩스메이지슈즈",
+  "앱솔랩스메이지슈트",
+  "앱솔랩스메이지케이프",
+  "앱솔랩스메이지크라운",
+  "앱솔랩스시프글러브",
+  "앱솔랩스시프숄더",
+  "앱솔랩스시프슈즈",
+  "앱솔랩스시프슈트",
+  "앱솔랩스시프캡",
+  "앱솔랩스시프케이프",
+  "앱솔랩스아처글러브",
+  "앱솔랩스아처숄더",
+  "앱솔랩스아처슈즈",
+  "앱솔랩스아처슈트",
+  "앱솔랩스아처케이프",
+  "앱솔랩스아처후드",
+  "앱솔랩스파이렛글러브",
+  "앱솔랩스파이렛숄더",
+  "앱솔랩스파이렛슈즈",
+  "앱솔랩스파이렛슈트",
+  "앱솔랩스파이렛케이프",
+  "앱솔랩스파이렛페도라",
+];
+
+let absolabWeapon = [
+  "앱솔랩스파일 갓",
+  "앱솔랩스포인팅건",
+  "앱솔랩스피어싱스피어",
+  "앱솔랩스핀쳐케인",
+  "앱솔랩스핼버드",
+  "앱솔랩스에너지소드",
+  "앱솔랩스에센스",
+  "앱솔랩스에인션트 보우",
+  "앱솔랩스엑스",
+  "앱솔랩스체인",
+  "앱솔랩스크로스보우",
+  "앱솔랩스튜너",
+  "앱솔랩스브로드세이버",
+  "앱솔랩스브로드엑스",
+  "앱솔랩스브로드해머",
+  "앱솔랩스블래스트캐논",
+  "앱솔랩스블레이드",
+  "앱솔랩스블로우너클",
+  "앱솔랩스비트해머",
+  "앱솔랩스샤이닝로드",
+  "앱솔랩스세이버",
+  "앱솔랩스소울슈터",
+  "앱솔랩스슈팅보우",
+  "앱솔랩스스펠링스태프",
+  "앱솔랩스스펠링완드",
+  "앱솔랩스슬래셔",
+  "앱솔랩스데스페라도",
+  "앱솔랩스듀얼보우건",
+  "앱솔랩스리벤지가즈",
+  "앱솔랩스매직 건틀렛",
+  "앱솔랩스ESP리미터",
+  "앱솔랩스괴선",
+];
+
+let arcaneArmor = [
+  "아케인셰이드나이트글러브",
+  "아케인셰이드나이트숄더",
+  "아케인셰이드나이트슈즈",
+  "아케인셰이드나이트슈트",
+  "아케인셰이드나이트케이프",
+  "아케인셰이드나이트햇",
+  "아케인셰이드메이지글러브",
+  "아케인셰이드메이지숄더",
+  "아케인셰이드메이지슈즈",
+  "아케인셰이드메이지슈트",
+  "아케인셰이드메이지케이프",
+  "아케인셰이드메이지햇",
+  "아케인셰이드시프글러브",
+  "아케인셰이드시프숄더",
+  "아케인셰이드시프슈즈",
+  "아케인셰이드시프슈트",
+  "아케인셰이드시프케이프",
+  "아케인셰이드시프햇",
+  "아케인셰이드아처글러브",
+  "아케인셰이드아처숄더",
+  "아케인셰이드아처슈즈",
+  "아케인셰이드아처슈트",
+  "아케인셰이드아처케이프",
+  "아케인셰이드아처햇",
+  "아케인셰이드파이렛글러브",
+  "아케인셰이드파이렛숄더",
+  "아케인셰이드파이렛슈즈",
+  "아케인셰이드파이렛슈트",
+  "아케인셰이드파이렛케이프",
+  "아케인셰이드파이렛햇",
+];
+
+let arcaneWeapon = [
+  "아케인셰이드ESP리미터",
+  "아케인셰이드가즈",
+  "아케인셰이드대거",
+  "아케인셰이드데스페라도",
+  "아케인셰이드듀얼보우건",
+  "아케인셰이드매직 건틀렛",
+  "아케인셰이드보우",
+  "아케인셰이드블레이드",
+  "아케인셰이드샤이닝로드",
+  "아케인셰이드세이버",
+  "아케인셰이드소울슈터",
+  "아케인셰이드스태프",
+  "아케인셰이드스피어",
+  "아케인셰이드시즈건",
+  "아케인셰이드에너지체인",
+  "아케인셰이드에센스",
+  "아케인셰이드에인션트 보우",
+  "아케인셰이드엑스",
+  "아케인셰이드엘라하",
+  "아케인셰이드완드",
+  "아케인셰이드체인",
+  "아케인셰이드초선",
+  "아케인셰이드케인",
+  "아케인셰이드크로스보우",
+  "아케인셰이드클로",
+  "아케인셰이드투핸드소드",
+  "아케인셰이드투핸드엑스",
+  "아케인셰이드투핸드해머",
+  "아케인셰이드튜너",
+  "아케인셰이드폴암",
+  "아케인셰이드피스톨",
+  "아케인셰이드해머",
+];
+
+async function equipment(kinds, type) {
+  let items = [];
+  if (kinds == "!앱솔랩스") {
+    if (type == "무기") {
+      items = absolabWeapon;
+    } else if (type == "방어구") {
+      items = absolabArmor;
+    } else {
+      return;
+    }
+  } else if (kinds == "!아케인셰이드" || kinds == "!아케인") {
+    if (type == "무기") {
+      items = arcaneWeapon;
+    } else if (type == "방어구") {
+      items = arcaneArmor;
+    } else {
+      return;
+    }
+  }
+  let Prices = [];
+  for (let itemName of items) {
+    let uri = `https://maple.market/items/${itemName}/엘리시움`;
+    // console.dir(uri);
+    let result = await axios.get(encodeURI(uri));
+    let htmlData = cheerio.load(result.data);
+    let itemPrice = htmlData(
+      "#auction-list > table > tbody > tr:nth-child(1) > td:nth-child(5)"
+    );
+
+    // console.dir(_.get(itemPrice, "0.children"));
+
+    // console.dir(itemPrice);
+    let regax = /[^0-9가-힇]/g;
+    let itemPrice1 = _.get(itemPrice, "0.children")[0].data;
+    itemPrice = _.get(itemPrice, "0.children")[2].data;
+    itemPrice1 = itemPrice1.replace(regax, "");
+    itemPrice = itemPrice.replace(regax, "");
+
+    // console.dir({ itemName, itemPrice, itemPrice1 });
+    Prices.push({ itemName, itemPrice, itemPrice1 });
+  }
+
+  Prices.sort((a, b) => {
+    if (parseInt(a.itemPrice1) > parseInt(b.itemPrice1)) {
+      return -1;
+    }
+    if (parseInt(a.itemPrice1) < parseInt(b.itemPrice1)) {
+      return 1;
+    }
+  });
+  console.dir(Prices);
+  let priceString = "[경매장 결과]\n" + COMPRES;
+  for (let price of Prices) {
+    priceString += `\n${price.itemName} : ${price.itemPrice}`;
+  }
+
+  return priceString;
 }
 
 main().then();
