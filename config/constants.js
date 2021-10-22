@@ -21,7 +21,7 @@ const COMMAND_SELECTION = {
     },
     {
       name: "!채널",
-      alias: ["ㅊㄴ"],
+      alias: ["!ㅊㄴ"],
       params: {
         type: "channel",
       },
@@ -34,7 +34,7 @@ const COMMAND_HELP = {
   methods: [
     {
       name: "!도움말",
-      alias: [""],
+      alias: ["!ㄷㅇㅁ"],
       params: {},
       description: "도움말을 보여줍니다.",
     },
