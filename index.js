@@ -77,6 +77,13 @@ CLIENT.on("chat", async (data, channel) => {
       } 명령어 사용 / 내용 : ${data.text}`
     );
   }
+
+  try {
+    let routerResult = router(data, channel);
+  } catch (error) {
+    console.dir(error);
+  }
+
   // 요청들어옴
   // 방 번호를 보고
   // 이방의 타입을 확인 ( 메이플) => COMMON,MAPLESTORY
