@@ -1068,31 +1068,6 @@ async function set_probability_file(html, file_name) {
     first_line_flag = false;
   }
 }
-
-function contents_timer(contents) {
-  let file_name = "";
-  switch (contents) {
-    case "모험섬":
-      file_name = "./알림/모험섬.txt";
-      break;
-    case "카오스게이트":
-      file_name = "./알림/카오스게이트.txt";
-      break;
-    case "필드보스":
-      file_name = "./알림/필드보스.txt";
-      break;
-  }
-  let file_data = fs.readFileSync(file_name, "utf8");
-  let data_split = file_data.split(",");
-
-  for (let i of CLIENT.channelList.open["_map"]) {
-    if (data_split.indexOf(String(i[0])) !== -1) {
-      // console.log(i[1]['_channel']);
-      i[1].sendChat(contents + " 시작 10분전입니다.");
-    }
-  }
-}
-
 function register_contents(contents, channelId) {
   let file_name = "";
   switch (contents) {
@@ -1124,7 +1099,7 @@ function register_contents(contents, channelId) {
   // 이미 등록되어있으면 삭제
   if (data_split.indexOf(channelId) !== -1) {
     data_split.splice(data_split.indexOf(channelId), 1);
-    fs.writeFile(file_name, data_split, function (err) {
+    fs.writeFile(file_name, data_split.join(), function (err) {
       if (err) {
         return "알림변경에 실패하였습니다.";
       }
@@ -1134,7 +1109,7 @@ function register_contents(contents, channelId) {
   // 등록 안되어있다면 등록
   else {
     data_split.push(channelId);
-    fs.writeFile(file_name, data_split, function (err) {
+    fs.writeFile(file_name, data_split.join(), function (err) {
       if (err) {
         return "알림변경에 실패하였습니다.";
       }
