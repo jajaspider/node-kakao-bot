@@ -1121,7 +1121,7 @@ function register_contents(contents, channelId) {
   // 이미 등록되어있으면 삭제
   if (data_split.indexOf(channelId) !== -1) {
     data_split.splice(data_split.indexOf(channelId), 1);
-    fs.writeFile(file_name, data_split, function (err) {
+    fs.writeFile(file_name, data_split.join(), function (err) {
       if (err) {
         return "알림변경에 실패하였습니다.";
       }
@@ -1131,7 +1131,7 @@ function register_contents(contents, channelId) {
   // 등록 안되어있다면 등록
   else {
     data_split.push(channelId);
-    fs.writeFile(file_name, data_split, function (err) {
+    fs.writeFile(file_name, data_split.join(), function (err) {
       if (err) {
         return "알림변경에 실패하였습니다.";
       }
