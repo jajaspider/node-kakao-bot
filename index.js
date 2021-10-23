@@ -1298,23 +1298,18 @@ async function equipment(kinds, type) {
   let Prices = [];
   for (let itemName of items) {
     let uri = `https://maple.market/items/${itemName}/엘리시움`;
-    // console.dir(uri);
     let result = await axios.get(encodeURI(uri));
     let htmlData = cheerio.load(result.data);
     let itemPrice = htmlData(
-      "#auction-list > table > tbody > tr:nth-child(1) > td:nth-child(5)"
+      "#auction-list > table > tbody > tr:nth-child(1) > td"
     );
 
-    // console.dir(_.get(itemPrice, "0.children"));
-
-    // console.dir(itemPrice);
     let regax = /[^0-9가-힇]/g;
-    let itemPrice1 = _.get(itemPrice, "0.children")[0].data;
-    itemPrice = _.get(itemPrice, "0.children")[2].data;
+    let itemPrice1 = itemPrice[itemPrice.length - 3]["children"][0].data;
+    itemPrice = itemPrice[itemPrice.length - 3]["children"][2].data;
     itemPrice1 = itemPrice1.replace(regax, "");
     itemPrice = itemPrice.replace(regax, "");
 
-    // console.dir({ itemName, itemPrice, itemPrice1 });
     Prices.push({ itemName, itemPrice, itemPrice1 });
   }
 
@@ -1326,7 +1321,7 @@ async function equipment(kinds, type) {
       return 1;
     }
   });
-  console.dir(Prices);
+
   let priceString = "[경매장 결과]\n" + COMPRES;
   for (let price of Prices) {
     priceString += `\n${price.itemName} : ${price.itemPrice}`;
