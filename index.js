@@ -326,10 +326,10 @@ CLIENT.on("chat", async (data, channel) => {
     }
   }
 
-  if (
+  if (messageSplit[0] == "!앱솔" ||
     messageSplit[0] == "!앱솔랩스" ||
     messageSplit[0] == "!아케인" ||
-    messageSplit[0] == "!셰이드"
+    messageSplit[0] == "!아케인셰이드"
   ) {
     let result = await equipment(messageSplit[0], messageSplit[1]);
     if (!result) {
@@ -1294,7 +1294,9 @@ let arcaneWeapon = [
 
 async function equipment(kinds, type) {
   let items = [];
-  if (kinds == "!앱솔랩스") {
+  let itemClassfication = "";
+  if (kinds == "!앱솔랩스" || kinds == "!앱솔") {
+    itemClassfication = "앱솔랩스";
     if (type == "무기") {
       items = absolabWeapon;
     } else if (type == "방어구") {
@@ -1303,6 +1305,7 @@ async function equipment(kinds, type) {
       return;
     }
   } else if (kinds == "!아케인셰이드" || kinds == "!아케인") {
+    itemClassfication = "아케인셰이드";
     if (type == "무기") {
       items = arcaneWeapon;
     } else if (type == "방어구") {
@@ -1312,21 +1315,27 @@ async function equipment(kinds, type) {
     }
   }
   let Prices = [];
-  for (let itemName of items) {
-    let uri = `https://maple.market/items/${itemName}/엘리시움`;
+  for (let item of items) {
+    let uri = `https://maple.market/items/${item}/엘리시움`;
     let result = await axios.get(encodeURI(uri));
     let htmlData = cheerio.load(result.data);
     let itemPrice = htmlData(
       "#auction-list > table > tbody > tr:nth-child(1) > td"
     );
+    let itemName = htmlData("#auction-list > table > tbody > tr:nth-child(1) > td.text-left > span");
 
     let unitPrice = null;
-    let regax = /[^0-9가-힇]/g;
+    let priceRegax = /[^0-9가-힇 ]/g;
+    let nameRegax = /[^가-힇 ]/g;
 
     unitPrice = itemPrice[itemPrice.length - 3]["children"][2].data;
+    unitPrice = unitPrice.replace(priceRegax, "").trim();
+
     itemPrice = itemPrice[itemPrice.length - 3]["children"][0].data;
-    itemPrice = itemPrice.replace(regax, "");
-    unitPrice = unitPrice.replace(regax, "");
+    itemPrice = itemPrice.replace(priceRegax, "").trim();
+
+    itemName = itemName[0]['children'][0].data;
+    itemName = itemName.replace(nameRegax, "").trim().replace(itemClassfication, "");
 
     Prices.push({
       itemName,
