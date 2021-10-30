@@ -5,15 +5,21 @@ const schedule = require("node-schedule");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const webdriver = require("selenium-webdriver");
-const { By } = require("selenium-webdriver");
+const {
+  By
+} = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const shell = require("shelljs");
 const download = require("image-downloader");
-const { Carp } = require("./LostarkUpdater");
+const {
+  Carp
+} = require("./LostarkUpdater");
 const logger = require("./logger/index");
 const _ = require("lodash");
 const selection = require("./api/selection.js");
-const { CONNECTION_INFO } = require("./config/connection.js");
+const {
+  CONNECTION_INFO
+} = require("./config/connection.js");
 const Utils = require("./utils.js");
 const commandManager = require("./commandManager");
 
@@ -132,11 +138,19 @@ CLIENT.on("chat", async (data, channel) => {
   let commonService = commandManager.commonCommandValidator(data.text);
   let maplestoryService = commandManager.maplestoryCommandValidator(data.text);
   let lostarkService = commandManager.lostarkCommandValidator(data.text);
-  console.dir({ commonService, maplestoryService, lostarkService });
+  console.dir({
+    commonService,
+    maplestoryService,
+    lostarkService
+  });
   let commonServiceName = _.get(commonService, "name");
   let maplestoryServiceName = _.get(maplestoryService, "name");
   let lostarkServiceName = _.get(lostarkService, "name");
-  console.dir({ commonServiceName, maplestoryService, lostarkService });
+  console.dir({
+    commonServiceName,
+    maplestoryService,
+    lostarkService
+  });
   /**
    * description :  기본 명령어
    */
@@ -145,9 +159,9 @@ CLIENT.on("chat", async (data, channel) => {
       let result = await selection.getSelection(commonService.method.params);
       channel.sendChat(
         new node_kakao.ChatBuilder()
-          .append(new node_kakao.ReplyContent(data.chat))
-          .text(result)
-          .build(node_kakao.KnownChatType.REPLY)
+        .append(new node_kakao.ReplyContent(data.chat))
+        .text(result)
+        .build(node_kakao.KnownChatType.REPLY)
       );
     } else if (
       messageSplit.length >= 2 &&
@@ -231,9 +245,9 @@ CLIENT.on("chat", async (data, channel) => {
   if (data.text.endsWith("확률")) {
     channel.sendChat(
       new node_kakao.ChatBuilder()
-        .append(new node_kakao.ReplyContent(data.chat))
-        .text("확률 : " + Utils.getPercent() + "%")
-        .build(node_kakao.KnownChatType.REPLY)
+      .append(new node_kakao.ReplyContent(data.chat))
+      .text("확률 : " + Utils.getPercent() + "%")
+      .build(node_kakao.KnownChatType.REPLY)
     );
   }
 
@@ -272,8 +286,8 @@ CLIENT.on("chat", async (data, channel) => {
 
         //이미지 확장자
         let ext = String(
-          channel["_chatListStore"]["_chatList"][i].attachment.url
-        )
+            channel["_chatListStore"]["_chatList"][i].attachment.url
+          )
           .split("/")
           .reverse()[0]
           .split(".")
@@ -289,7 +303,9 @@ CLIENT.on("chat", async (data, channel) => {
 
         download
           .image(options)
-          .then(({ filename }) => {
+          .then(({
+            filename
+          }) => {
             console.log("Saved to", filename); // saved to /path/to/dest/photo.jpg
             channel.sendChat("등록되었습니다.");
           })
@@ -625,7 +641,7 @@ const getCollection = async (channel, characterName) => {
 
     await driver.get(
       "https://lostark.game.onstove.com/Profile/Character/" +
-        encodeURI(characterName)
+      encodeURI(characterName)
     );
     await driver.sleep(2000);
     const collectionButton = await driver.findElement(
@@ -795,9 +811,9 @@ async function lostark_notice_check(html) {
         fs.appendFileSync(
           file_name,
           title_list[idx].children[0]["data"] +
-            "|" +
-            title_href[idx].attribs.href +
-            "\n",
+          "|" +
+          title_href[idx].attribs.href +
+          "\n",
           (err) => {
             if (err) console.log(err);
           }
@@ -865,9 +881,9 @@ async function maplestory_notice_check(html) {
         fs.appendFileSync(
           file_name,
           title_list[idx].children[0]["data"] +
-            "|" +
-            title_href[idx].attribs.href +
-            "\n",
+          "|" +
+          title_href[idx].attribs.href +
+          "\n",
           (err) => {
             if (err) console.log(err);
           }
@@ -1304,27 +1320,33 @@ async function equipment(kinds, type) {
       "#auction-list > table > tbody > tr:nth-child(1) > td"
     );
 
+    let unitPrice = null;
     let regax = /[^0-9가-힇]/g;
-    let itemPrice1 = itemPrice[itemPrice.length - 3]["children"][0].data;
-    itemPrice = itemPrice[itemPrice.length - 3]["children"][2].data;
-    itemPrice1 = itemPrice1.replace(regax, "");
-    itemPrice = itemPrice.replace(regax, "");
 
-    Prices.push({ itemName, itemPrice, itemPrice1 });
+    unitPrice = itemPrice[itemPrice.length - 3]["children"][2].data;
+    itemPrice = itemPrice[itemPrice.length - 3]["children"][0].data;
+    itemPrice = itemPrice.replace(regax, "");
+    unitPrice = unitPrice.replace(regax, "");
+
+    Prices.push({
+      itemName,
+      unitPrice,
+      itemPrice
+    });
   }
 
   Prices.sort((a, b) => {
-    if (parseInt(a.itemPrice1) > parseInt(b.itemPrice1)) {
+    if (parseInt(a.itemPrice) > parseInt(b.itemPrice)) {
       return -1;
     }
-    if (parseInt(a.itemPrice1) < parseInt(b.itemPrice1)) {
+    if (parseInt(a.itemPrice) < parseInt(b.itemPrice)) {
       return 1;
     }
   });
 
   let priceString = "[경매장 결과]\n" + COMPRES;
   for (let price of Prices) {
-    priceString += `\n${price.itemName} : ${price.itemPrice}`;
+    priceString += `\n${price.itemName} : ${price.unitPrice}`;
   }
 
   return priceString;
