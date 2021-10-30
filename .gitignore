@@ -1,5 +1,6 @@
 node_modules
 *.txt
+.DS_store
 
 # temp file
 start.sh
@@ -10,6 +11,8 @@ config/connection.js
 config/lostarkupdater-6592a098bcaf.json
 logs
 node_modules
+chromedriver.exe
+chromedriver
 
 #data
 보스
@@ -17,7 +20,3 @@ node_modules
 무토
 알림
 MVP
-
-#setting
-chromedriver.exe
-chromedriver
