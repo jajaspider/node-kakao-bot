@@ -1309,10 +1309,15 @@ async function equipment(kinds, type) {
   }
   let Prices = [];
   for (let item of items) {
+    let nameRegax = /[^가-힇 ]/g;
+    let priceRegax = /[^0-9가-힇 ]/g;
+    let timeRegax = /[^0-9가-힇 ]/g;
+
     try {
       let uri = `https://maple.market/items/${item}/엘리시움`;
       let result = await axios.get(encodeURI(uri));
       let htmlData = cheerio.load(result.data);
+
       let itemPrice = htmlData(
         "#auction-list > table > tbody > tr:nth-child(1) > td"
       );
@@ -1321,23 +1326,17 @@ async function equipment(kinds, type) {
       );
 
       let unitPrice = null;
-      let priceRegax = /[^0-9가-힇 ]/g;
-      let nameRegax = /[^가-힇 ]/g;
 
       unitPrice = itemPrice[itemPrice.length - 3]["children"][2].data;
       unitPrice = unitPrice.replace(priceRegax, "").trim();
 
+      itemTime = itemPrice[itemPrice.length - 1]["children"][0].data;
+      itemTime = itemTime.replace(timeRegax, "").trim();
+
       itemPrice = itemPrice[itemPrice.length - 3]["children"][0].data;
       itemPrice = itemPrice.replace(priceRegax, "").trim();
 
-      itemTime = itemPrice[itemPrice.length - 1]["children"][0].data;
-      itemTime = itemTime.replace(priceRegax, "").trim();
-
-      itemName = itemName[0]["children"][0].data;
-      itemName = itemName
-        .replace(nameRegax, "")
-        .trim()
-        .replace(itemClassfication, "");
+      itemName = item.replace(itemClassfication, "");
 
       Prices.push({
         itemName,
@@ -1346,11 +1345,7 @@ async function equipment(kinds, type) {
         itemTime,
       });
     } catch (e) {
-      let nameRegax = /[^가-힇 ]/g;
-      itemName = item
-        .replace(nameRegax, "")
-        .trim()
-        .replace(itemClassfication, "");
+      itemName = item.replace(itemClassfication, "");
       unitPrice = "0";
       itemPrice = "0";
       itemTime = "수집 불가";
