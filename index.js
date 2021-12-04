@@ -5,21 +5,15 @@ const schedule = require("node-schedule");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const webdriver = require("selenium-webdriver");
-const {
-  By
-} = require("selenium-webdriver");
+const { By } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const shell = require("shelljs");
 const download = require("image-downloader");
-const {
-  Carp
-} = require("./LostarkUpdater");
+const { Carp } = require("./LostarkUpdater");
 const logger = require("./logger/index");
 const _ = require("lodash");
 const selection = require("./api/selection.js");
-const {
-  CONNECTION_INFO
-} = require("./config/connection.js");
+const { CONNECTION_INFO } = require("./config/connection.js");
 const Utils = require("./utils.js");
 const commandManager = require("./commandManager");
 
@@ -141,7 +135,7 @@ CLIENT.on("chat", async (data, channel) => {
   console.dir({
     commonService,
     maplestoryService,
-    lostarkService
+    lostarkService,
   });
   let commonServiceName = _.get(commonService, "name");
   let maplestoryServiceName = _.get(maplestoryService, "name");
@@ -149,7 +143,7 @@ CLIENT.on("chat", async (data, channel) => {
   console.dir({
     commonServiceName,
     maplestoryService,
-    lostarkService
+    lostarkService,
   });
   /**
    * description :  기본 명령어
@@ -159,9 +153,9 @@ CLIENT.on("chat", async (data, channel) => {
       let result = await selection.getSelection(commonService.method.params);
       channel.sendChat(
         new node_kakao.ChatBuilder()
-        .append(new node_kakao.ReplyContent(data.chat))
-        .text(result)
-        .build(node_kakao.KnownChatType.REPLY)
+          .append(new node_kakao.ReplyContent(data.chat))
+          .text(result)
+          .build(node_kakao.KnownChatType.REPLY)
       );
     } else if (
       messageSplit.length >= 2 &&
@@ -245,9 +239,9 @@ CLIENT.on("chat", async (data, channel) => {
   if (data.text.endsWith("확률")) {
     channel.sendChat(
       new node_kakao.ChatBuilder()
-      .append(new node_kakao.ReplyContent(data.chat))
-      .text("확률 : " + Utils.getPercent() + "%")
-      .build(node_kakao.KnownChatType.REPLY)
+        .append(new node_kakao.ReplyContent(data.chat))
+        .text("확률 : " + Utils.getPercent() + "%")
+        .build(node_kakao.KnownChatType.REPLY)
     );
   }
 
@@ -286,8 +280,8 @@ CLIENT.on("chat", async (data, channel) => {
 
         //이미지 확장자
         let ext = String(
-            channel["_chatListStore"]["_chatList"][i].attachment.url
-          )
+          channel["_chatListStore"]["_chatList"][i].attachment.url
+        )
           .split("/")
           .reverse()[0]
           .split(".")
@@ -303,9 +297,7 @@ CLIENT.on("chat", async (data, channel) => {
 
         download
           .image(options)
-          .then(({
-            filename
-          }) => {
+          .then(({ filename }) => {
             console.log("Saved to", filename); // saved to /path/to/dest/photo.jpg
             channel.sendChat("등록되었습니다.");
           })
@@ -326,7 +318,8 @@ CLIENT.on("chat", async (data, channel) => {
     }
   }
 
-  if (messageSplit[0] == "!앱솔" ||
+  if (
+    messageSplit[0] == "!앱솔" ||
     messageSplit[0] == "!앱솔랩스" ||
     messageSplit[0] == "!아케인" ||
     messageSplit[0] == "!아케인셰이드"
@@ -641,7 +634,7 @@ const getCollection = async (channel, characterName) => {
 
     await driver.get(
       "https://lostark.game.onstove.com/Profile/Character/" +
-      encodeURI(characterName)
+        encodeURI(characterName)
     );
     await driver.sleep(2000);
     const collectionButton = await driver.findElement(
@@ -811,9 +804,9 @@ async function lostark_notice_check(html) {
         fs.appendFileSync(
           file_name,
           title_list[idx].children[0]["data"] +
-          "|" +
-          title_href[idx].attribs.href +
-          "\n",
+            "|" +
+            title_href[idx].attribs.href +
+            "\n",
           (err) => {
             if (err) console.log(err);
           }
@@ -881,9 +874,9 @@ async function maplestory_notice_check(html) {
         fs.appendFileSync(
           file_name,
           title_list[idx].children[0]["data"] +
-          "|" +
-          title_href[idx].attribs.href +
-          "\n",
+            "|" +
+            title_href[idx].attribs.href +
+            "\n",
           (err) => {
             if (err) console.log(err);
           }
@@ -1316,32 +1309,53 @@ async function equipment(kinds, type) {
   }
   let Prices = [];
   for (let item of items) {
-    let uri = `https://maple.market/items/${item}/엘리시움`;
-    let result = await axios.get(encodeURI(uri));
-    let htmlData = cheerio.load(result.data);
-    let itemPrice = htmlData(
-      "#auction-list > table > tbody > tr:nth-child(1) > td"
-    );
-    let itemName = htmlData("#auction-list > table > tbody > tr:nth-child(1) > td.text-left > span");
+    try {
+      let uri = `https://maple.market/items/${item}/엘리시움`;
+      let result = await axios.get(encodeURI(uri));
+      let htmlData = cheerio.load(result.data);
+      let itemPrice = htmlData(
+        "#auction-list > table > tbody > tr:nth-child(1) > td"
+      );
+      let itemName = htmlData(
+        "#auction-list > table > tbody > tr:nth-child(1) > td.text-left > span"
+      );
 
-    let unitPrice = null;
-    let priceRegax = /[^0-9가-힇 ]/g;
-    let nameRegax = /[^가-힇 ]/g;
+      let unitPrice = null;
+      let priceRegax = /[^0-9가-힇 ]/g;
+      let nameRegax = /[^가-힇 ]/g;
 
-    unitPrice = itemPrice[itemPrice.length - 3]["children"][2].data;
-    unitPrice = unitPrice.replace(priceRegax, "").trim();
+      unitPrice = itemPrice[itemPrice.length - 3]["children"][2].data;
+      unitPrice = unitPrice.replace(priceRegax, "").trim();
 
-    itemPrice = itemPrice[itemPrice.length - 3]["children"][0].data;
-    itemPrice = itemPrice.replace(priceRegax, "").trim();
+      itemPrice = itemPrice[itemPrice.length - 3]["children"][0].data;
+      itemPrice = itemPrice.replace(priceRegax, "").trim();
 
-    itemName = itemName[0]['children'][0].data;
-    itemName = itemName.replace(nameRegax, "").trim().replace(itemClassfication, "");
+      itemName = itemName[0]["children"][0].data;
+      itemName = itemName
+        .replace(nameRegax, "")
+        .trim()
+        .replace(itemClassfication, "");
 
-    Prices.push({
-      itemName,
-      unitPrice,
-      itemPrice
-    });
+      Prices.push({
+        itemName,
+        unitPrice,
+        itemPrice,
+      });
+    } catch (e) {
+      let nameRegax = /[^가-힇 ]/g;
+      itemName = item
+        .replace(nameRegax, "")
+        .trim()
+        .replace(itemClassfication, "");
+      unitPrice = "0";
+      itemPrice = "0";
+
+      Prices.push({
+        itemName,
+        unitPrice,
+        itemPrice,
+      });
+    }
   }
 
   Prices.sort((a, b) => {
