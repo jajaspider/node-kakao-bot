@@ -1330,6 +1330,9 @@ async function equipment(kinds, type) {
       itemPrice = itemPrice[itemPrice.length - 3]["children"][0].data;
       itemPrice = itemPrice.replace(priceRegax, "").trim();
 
+      itemTime = itemPrice[itemPrice.length - 1]["children"][0].data;
+      itemTime = itemTime.replace(priceRegax, "").trim();
+
       itemName = itemName[0]["children"][0].data;
       itemName = itemName
         .replace(nameRegax, "")
@@ -1340,6 +1343,7 @@ async function equipment(kinds, type) {
         itemName,
         unitPrice,
         itemPrice,
+        itemTime,
       });
     } catch (e) {
       let nameRegax = /[^가-힇 ]/g;
@@ -1349,11 +1353,13 @@ async function equipment(kinds, type) {
         .replace(itemClassfication, "");
       unitPrice = "0";
       itemPrice = "0";
+      itemTime = "수집 불가";
 
       Prices.push({
         itemName,
         unitPrice,
         itemPrice,
+        itemTime,
       });
     }
   }
@@ -1369,7 +1375,7 @@ async function equipment(kinds, type) {
 
   let priceString = "[경매장 결과]\n" + COMPRES;
   for (let price of Prices) {
-    priceString += `\n${price.itemName} : ${price.unitPrice}`;
+    priceString += `\n${price.itemName} : ${price.unitPrice} (${price.itemTime})`;
   }
 
   return priceString;
